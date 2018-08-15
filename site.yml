@@ -1,0 +1,4 @@
+---
+- hosts: keycheck
+  roles:
+    - ssh_key_rotation
