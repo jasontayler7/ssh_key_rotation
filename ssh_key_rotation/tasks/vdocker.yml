@@ -2,7 +2,7 @@
   - name: "adding new public keys"
     authorized_key:
       user: "{{ ansible_user_id }}"
-      key: "{{ lookup('file', '/home/tarun/Templates/id_rsa2.pub') }}"
+      key: "{{ lookup('file', '{{ new_pubkey_path }}') }}"
       state: present
 
   - name: "getting ip addreess"
@@ -15,12 +15,12 @@
 
   - name: checking if able to ssh with new key or not
     delegate_to: localhost
-    shell: ssh -i /home/tarun/Templates/id_rsa2 {{ ansible_user_id }}@{{ host_ip.stdout }}
+    shell: ssh -i {{ old_privkey_path }} {{ ansible_user_id }}@{{ host_ip.stdout }}
     register: output
 
   - name: "adding new public keys and removing previous key"
     authorized_key:
       user: "{{ ansible_user_id }}"
-      key: "{{ lookup('file', '/home/tarun/.ssh/id_rsa.pub') }}"
+      key: "{{ lookup('file', '{{ old_pubkey_path }}') }}"
       state: absent
     when: output.rc == 0
