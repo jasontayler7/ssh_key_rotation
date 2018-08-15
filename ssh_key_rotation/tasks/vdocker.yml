@@ -1,0 +1,26 @@
+---
+  - name: "adding new public keys"
+    authorized_key:
+      user: "{{ ansible_user_id }}"
+      key: "{{ lookup('file', '/home/tarun/Templates/id_rsa2.pub') }}"
+      state: present
+
+  - name: "getting ip addreess"
+    command: hostname -I
+    register: host_ip
+
+  - name: ip address
+    debug:
+      var: host_ip.stdout
+
+  - name: checking if able to ssh with new key or not
+    delegate_to: localhost
+    shell: ssh -i /home/tarun/Templates/id_rsa2 {{ ansible_user_id }}@{{ host_ip.stdout }}
+    register: output
+
+  - name: "adding new public keys and removing previous key"
+    authorized_key:
+      user: "{{ ansible_user_id }}"
+      key: "{{ lookup('file', '/home/tarun/.ssh/id_rsa.pub') }}"
+      state: absent
+    when: output.rc == 0

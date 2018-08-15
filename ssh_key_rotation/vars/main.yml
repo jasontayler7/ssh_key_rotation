@@ -1,0 +1,5 @@
+---
+# vars file for ssh_key_rotation
+new_pubkey_path: /home/tarun/Templates/id_rsa2.pub
+new_privkey_path: /home/tarun/Templates/id_rsa2
+old_pubkey_path: /home/tarun/.ssh/id_rsa.pub

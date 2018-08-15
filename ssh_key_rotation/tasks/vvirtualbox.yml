@@ -1,0 +1,26 @@
+---
+  - name: "adding new public keys and removing previous key"
+    authorized_key:
+      user: "{{ ansible_user_id }}"
+      key: "{{ lookup('file', '{{ new_pubkey_path }}') }}"
+      state: present
+
+  - name: "printing ip address"
+    command: echo "{{ ansible_enp0s8.ipv4.address }}"
+    register: host_ip
+
+  - name: ip address
+    debug:
+      var: host_ip.stdout
+
+  - name: checking if able to ssh with new key or not
+    delegate_to: localhost
+    shell: ssh -i {{ new_privkey_path }} {{ ansible_user_id }}@{{ ansible_enp0s8.ipv4.address }}
+    register: output
+
+  - name: "adding new public keys and removing previous key"
+    authorized_key:
+      user: "{{ ansible_user_id }}"
+      key: "{{ lookup('file', '{{ old_pubkey_path }}') }}"
+      state: absent
+    when: output.rc == 0

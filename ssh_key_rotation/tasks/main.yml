@@ -1,0 +1,24 @@
+---
+# tasks file for ssh_key_rotation
+
+#- name: "adding new publickeys to the authorized keys of all the hosts"
+#  hosts: keycheck
+#  gather_facts: true
+#  tasks:
+
+  - name: getting ip address
+    include: vxen.yml
+    when: ansible_virtualization_type == "xen"
+
+  - name: getting ip address
+    include: vvirtualbox.yml
+    when: ansible_virtualization_type == "virtualbox"
+
+  - name: getting ip address
+    include: vkvm.yml
+    when: ansible_virtualization_type == "kvm"
+
+  - name: getting ip address
+    include: vdocker.yml
+    when: ansible_virtualization_type == "docker"
+
